@@ -7,6 +7,7 @@ import android.util.LruCache;
 
 import com.kakao.auth.KakaoSDK;
 
+// 앱수준에서 데이터를 관리하기 위하여 만든 클래스
 public class MyApp extends Application {
     private static volatile MyApp instance = null;
 

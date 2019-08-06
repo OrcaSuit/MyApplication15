@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 
+// 메인 로그인 화면 + 버튼을 클릭하면 프로필을 띄워준다.
 public class MainActivity extends BaseActivity {
     LoginButton btn_kakao;
     Button update;
@@ -96,7 +97,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onSuccess(MeV2Response response) {
-                Logger.d("user id : " + response.getId());
+                Logger.d("user  : " + response.getNickname());
                 Logger.d("profile image: " + response.getProfileImagePath());
 
 

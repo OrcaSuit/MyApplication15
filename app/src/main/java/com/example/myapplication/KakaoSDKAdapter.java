@@ -10,6 +10,7 @@ import com.kakao.auth.IApplicationConfig;
 import com.kakao.auth.ISessionConfig;
 import com.kakao.auth.KakaoAdapter;
 
+//서드파티 앱과 카카오 sdk를 연결하기 위한 어댑터 클래스
 public class KakaoSDKAdapter extends KakaoAdapter {
     // 로그인 시 사용 될, Session의 옵션 설정을 위한 인터페이스
     @Override

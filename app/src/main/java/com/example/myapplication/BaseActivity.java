@@ -4,6 +4,8 @@ import android.content.Intent;
 
 import androidx.fragment.app.FragmentActivity;
 
+
+//액티비티 분기를 위한 클래스
 public abstract class BaseActivity extends FragmentActivity {
     
     protected void redirectLoginActivity() {

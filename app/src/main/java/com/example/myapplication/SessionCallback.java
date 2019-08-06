@@ -9,6 +9,8 @@ import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
 
+
+// 세션정보를 주고 받기 위한 클래스
 public class SessionCallback implements ISessionCallback {
     @Override
     public void onSessionOpened() {
