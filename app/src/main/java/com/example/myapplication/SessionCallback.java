@@ -8,6 +8,10 @@ import com.kakao.usermgmt.UserManagement;
 import com.kakao.usermgmt.callback.MeV2ResponseCallback;
 import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
+import com.kakao.util.helper.log.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 // 세션정보를 주고 받기 위한 클래스
@@ -23,17 +27,32 @@ public class SessionCallback implements ISessionCallback {
     }
 
     //사용자 정보 요청
-    public void requestMe() {
-        UserManagement.getInstance().me(new MeV2ResponseCallback() {
+    private void requestMe() {
+        List<String> keys = new ArrayList<>();
+        keys.add("properties.nickname");
+        keys.add("properties.profile_image");
+
+
+        UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
             @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                Log.e("SessionCallback :: ", "onSessionClosed : " + errorResult.getErrorMessage());
+            public void onFailure(ErrorResult errorResult) {
+                String message = "failed to get user info. msg=" + errorResult;
+                Logger.d(message);
             }
 
             @Override
-            public void onSuccess(MeV2Response result) {
-                Log.e("SessionCallback :: ", "onSuccess");
+            public void onSessionClosed(ErrorResult errorResult) {
+
             }
+
+            @Override
+            public void onSuccess(MeV2Response response) {
+                Logger.d("user  : " + response.getNickname());
+                Logger.d("profile image: " + response.getProfileImagePath());
+                Profile.getSingleton().setNickname(response.getProfileImagePath());
+                Profile.getSingleton().setUrl(response.getNickname());
+            }
+
         });
     }
 }

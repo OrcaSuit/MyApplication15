@@ -2,7 +2,9 @@ package com.example.myapplication;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -37,17 +39,22 @@ import java.util.Map;
 
 
 // 메인 로그인 화면 + 버튼을 클릭하면 프로필을 띄워준다.
-public class MainActivity extends BaseActivity {
+public class MainActivity extends Activity {
     LoginButton btn_kakao;
     Button update;
-    String nickname;
     ImageView imgView;
     TextView textView;
-    String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        KakaoSDK.init(new KakaoAdapter() {
+            @Override
+            public IApplicationConfig getApplicationConfig() {
+                return null;
+            }
+        });
+
         setContentView(R.layout.activity_main);
         imgView = (ImageView) findViewById(R.id.profile_pic);
         textView = (TextView) findViewById(R.id.nickname);
@@ -62,52 +69,19 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-
         update = (Button) findViewById(R.id.update_btn);
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestMe();
+                Session session = Session.getCurrentSession();
+                session.addCallback(new SessionCallback());
 
-                Glide.with(MainActivity.this).load(url).into(imgView);
-                textView.setText(nickname);
+                textView.setText(Profile.getSingleton().getNickname());
+                Glide.with(MainActivity.this).load(Profile.getSingleton().getUrl()).into(imgView);
 
             }
         });
 
-    }
-
-    private void requestMe() {
-        List<String> keys = new ArrayList<>();
-        keys.add("properties.nickname");
-        keys.add("properties.profile_image");
-
-
-        UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-                String message = "failed to get user info. msg=" + errorResult;
-                Logger.d(message);
-            }
-
-            @Override
-            public void onSessionClosed(ErrorResult errorResult) {
-                redirectLoginActivity();
-            }
-
-            @Override
-            public void onSuccess(MeV2Response response) {
-                Logger.d("user  : " + response.getNickname());
-                Logger.d("profile image: " + response.getProfileImagePath());
-
-
-                Application app = MyApp.getMyAppContext();
-                if (app == null)
-                    throw new UnsupportedOperationException("needs com.kakao.GlobalApplication in order to use ImageLoader");
-                    url = response.getProfileImagePath();
-                    nickname=response.getNickname();
-            }
-
-        });
     }
 }
+
