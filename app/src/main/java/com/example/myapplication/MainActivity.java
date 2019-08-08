@@ -2,27 +2,19 @@ package com.example.myapplication;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.kakao.auth.ApprovalType;
 import com.kakao.auth.AuthType;
-import com.kakao.auth.IApplicationConfig;
+
 import com.kakao.auth.ISessionCallback;
-import com.kakao.auth.ISessionConfig;
-import com.kakao.auth.KakaoAdapter;
-import com.kakao.auth.KakaoSDK;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.LoginButton;
@@ -33,29 +25,68 @@ import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+public class MainActivity extends AppCompatActivity {
+    private SessionCallback mCallback;
 
-// 메인 로그인 화면 + 버튼을 클릭하면 프로필을 띄워준다.
-public class MainActivity extends Activity {
     LoginButton btn_kakao;
     Button update;
     ImageView imgView;
     TextView textView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        KakaoSDK.init(new KakaoAdapter() {
-            @Override
-            public IApplicationConfig getApplicationConfig() {
-                return null;
-            }
-        });
+    MemberVO mMemberVO;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mCallback = new SessionCallback();
+        Session.getCurrentSession().addCallback(mCallback);
+    }
+
+    private  class SessionCallback implements ISessionCallback {
+        @Override
+        public void onSessionOpened() {
+            reqeustMe();
+        }
+
+        @Override
+        public void onSessionOpenFailed(KakaoException exception) {
+
+        }
+
+        private void reqeustMe(){
+            List<String> keys = new ArrayList<>();
+            keys.add("properties.nickname");
+            keys.add("properties.profile_image");
+
+
+            UserManagement.getInstance().me(keys, new MeV2ResponseCallback() {
+                @Override
+                public void onSessionClosed(ErrorResult errorResult) {
+
+                }
+
+                @Override
+                public void onSuccess(MeV2Response result) {
+                    Logger.d("id: " + result.getId());
+                    Logger.d("profile image: " + result.getNickname());
+                    Logger.d("profile image: " + result.getProfileImagePath());
+                    MyApp.getMyAppContext().getMemberVO(
+                    MyApp.getMyAppContext().getMemberVO(result.getId()).setName(result.getNickname());
+                    MyApp.getMyAppContext().getMemberVO(result.getId()).setIconUrl(result.getProfileImagePath());
+
+                }
+            });
+        }
+    }
+}
+/*
+        mMemberVO = ((MyApp)getApplication()).getMemberVO();
+
+
         imgView = (ImageView) findViewById(R.id.profile_pic);
         textView = (TextView) findViewById(R.id.nickname);
 
@@ -75,13 +106,12 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 Session session = Session.getCurrentSession();
                 session.addCallback(new SessionCallback());
-
-                textView.setText(Profile.getSingleton().getNickname());
                 Glide.with(MainActivity.this).load(Profile.getSingleton().getUrl()).into(imgView);
-
+                textView.setText(Profile.getSingleton().getNickname());
             }
         });
 
     }
-}
+    */
+
 

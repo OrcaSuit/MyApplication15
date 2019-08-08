@@ -49,8 +49,8 @@ public class SessionCallback implements ISessionCallback {
             public void onSuccess(MeV2Response response) {
                 Logger.d("user  : " + response.getNickname());
                 Logger.d("profile image: " + response.getProfileImagePath());
-                Profile.getSingleton().setNickname(response.getProfileImagePath());
-                Profile.getSingleton().setUrl(response.getNickname());
+                //Profile.getSingleton().setNickname(response.getProfileImagePath());
+                //Profile.getSingleton().setUrl(response.getNickname());
             }
 
         });
