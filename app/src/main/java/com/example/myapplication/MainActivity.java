@@ -44,12 +44,25 @@ public class MainActivity extends AppCompatActivity {
 
         mCallback = new SessionCallback();
         Session.getCurrentSession().addCallback(mCallback);
+
+        update = (Button) findViewById(R.id.update_btn);
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Session session = Session.getCurrentSession();
+                session.addCallback(new SessionCallback());
+                //Glide.with(MainActivity.this).load(Profile.getSingleton().getUrl()).into(imgView);
+                //textView.setText(Profile.getSingleton().getNickname());
+                textView.setText(MyApp.getMyAppContext().getMemberVO(MemberVO.class.
+            }
+        });
+
     }
 
     private  class SessionCallback implements ISessionCallback {
         @Override
         public void onSessionOpened() {
-            reqeustMe();
+            requestMe();
         }
 
         @Override
@@ -57,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        private void reqeustMe(){
+        private void requestMe(){
             List<String> keys = new ArrayList<>();
             keys.add("properties.nickname");
             keys.add("properties.profile_image");
@@ -74,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     Logger.d("id: " + result.getId());
                     Logger.d("profile image: " + result.getNickname());
                     Logger.d("profile image: " + result.getProfileImagePath());
-                    MyApp.getMyAppContext().getMemberVO(
+                    MyApp.getMyAppContext().getMemberVO(result.getId());
                     MyApp.getMyAppContext().getMemberVO(result.getId()).setName(result.getNickname());
                     MyApp.getMyAppContext().getMemberVO(result.getId()).setIconUrl(result.getProfileImagePath());
 

@@ -47,20 +47,10 @@ public class MyApp extends Application {
                 return memberVO;
             }
         }
-
-        return null;
-    }
-
-    public MemberVO getMemberVO(Long id, ) {
-        for (MemberVO memberVO : mMemberVOs) {
-            if (memberVO.getUUID().equals(id)) {
-                return memberVO;
-            }
-        }
-
-        return null;
-    }
-
-    MemberVO member = new MemberVO();
+        MemberVO member = new MemberVO();
         mMemberVOs.add(member);
+        member.setUUID(id);
+        return null;
+    }
+
 }
